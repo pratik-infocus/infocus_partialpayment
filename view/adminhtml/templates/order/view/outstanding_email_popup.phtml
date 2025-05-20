@@ -1,0 +1,55 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var \Infocus\PartialPayments\Block\Adminhtml\Order\View\EmailPopup $block */
+?>
+<?php if ($block->isPopupEnabled()) :?>
+<div id="outstanding_email_popup" class="outstanding-email-popup product-configure-popup" style="display: none;">
+    <form id="outstanding_email_form" method="post" action="<?php echo $block->escapeUrl($block->getFormUrl()) ?>">
+        <?= $block->getBlockHtml('formkey') ?>
+        <div id="outstanding_email_form_contents">
+            <div class="content">
+                <div class="outstanding-email-form fieldset admin__fieldset">
+                    <div class="field admin__field">
+                        <label class="admin__field-label" for="next_installment_amount"><?= $block->escapeHtml(__('Required payment amount from customer')) ?></label>
+                        <div class="control admin__field-control">
+                            <input type="text" class="input-text admin__control-text validate-number required-entry" name="next_installment_amount" value="<?php echo $block->escapeHtml($block->getOrder()->getTotalDue()) ?>" id="next_installment_amount" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-dialog-buttonset">
+                <button type="submit" class="action-primary" id="outstanding_email_send_button"><span><?= /* @escapeNotVerified */ __('Send Email') ?></span></button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    require([
+        "Infocus_PartialPayments/js/order/view/email_popup"
+    ], function(){
+
+//<![CDATA[
+        emailPopup = new OutstandingEmailPopup();
+//]]>
+    });
+</script>
+<?php endif;?>
+

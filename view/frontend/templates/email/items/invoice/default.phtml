@@ -1,0 +1,52 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var $block \Infocus\PartialPayments\Block\Sales\Order\Items\DefaultItems */
+
+// @codingStandardsIgnoreFile
+$_item = $block->getItem();
+$_order = $block->getItem()->getOrder();
+?>
+<tr>
+    <td class="item-info<?php if ($block->getItemOptions()): ?> has-extra<?php endif; ?>">
+        <p class="product-name"><?= $block->escapeHtml($_item->getName()) ?></p>
+        <p class="sku"><?= /* @escapeNotVerified */  __('SKU') ?>: <?= $block->escapeHtml($block->getSku($_item)) ?></p>
+        <?php if ($block->getItemOptions()): ?>
+            <dl>
+                <?php foreach ($block->getItemOptions() as $option): ?>
+                    <dt><strong><em><?= /* @escapeNotVerified */  $option['label'] ?></em></strong></dt>
+                    <dd>
+                        <?= /* @escapeNotVerified */  nl2br($option['value']) ?>
+                    </dd>
+                <?php endforeach; ?>
+            </dl>
+        <?php endif; ?>
+        <?php $addInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addInfoBlock) :?>
+            <?= $addInfoBlock->setItem($_item->getOrderItem())->toHtml() ?>
+        <?php endif; ?>
+        <?= $block->escapeHtml($_item->getDescription()) ?>
+    </td>
+
+    <td class="item-qty"><?= /* @escapeNotVerified */ ($block->getItemQty($_item)) * 1 ?></td>
+    <td class="item-price">
+        <?= /* @escapeNotVerified */ $block->getItemPrice($_item)   ?>
+    </td>
+</tr>

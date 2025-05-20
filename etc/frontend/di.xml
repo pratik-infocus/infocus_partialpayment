@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="partial_payment" xsi:type="object">Infocus\PartialPayments\Model\Checkout\Provider\MyAccountPayment</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Infocus\PartialPayments\Model\Checkout\Provider\Composite">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="checkout_default_config_provider" xsi:type="object">Infocus\PartialPayments\Model\Checkout\Provider\DefaultConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="check_frontend_availability" type="Infocus\PartialPayments\Plugin\Magento\Checkout\Model\DefaultConfigProvider"/>
+    </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="check_frontend_availability_layout" type="Infocus\PartialPayments\Plugin\Magento\Checkout\Block\Checkout\LayoutProcessor"/>
+    </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="check_frontend_availability_layout" type="Infocus\PartialPayments\Plugin\Magento\Checkout\Block\Checkout\LayoutProcessor"/>
+    </type>
+
+    <type name="Magento\Customer\Block\Account\Navigation">
+        <plugin name="infocus_hide_link" type="Infocus\PartialPayments\Plugin\Magento\Customer\Block\Account\Navigation"/>
+    </type>
+    <type name="Infocus\PartialPayments\Plugin\Magento\Customer\Block\Account\Navigation">
+        <arguments>
+            <argument name="parentBlockName" xsi:type="string">customer_account_navigation</argument>
+            <argument name="partiallyPaidBlockName" xsi:type="string">partially-paid-orders</argument>
+        </arguments>
+    </type>
+</config>

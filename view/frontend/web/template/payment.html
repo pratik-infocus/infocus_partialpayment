@@ -1,0 +1,41 @@
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<div class="checkout-payment-method"
+         data-role="content"
+         role="tabpanel"
+         aria-hidden="false">
+    <form id="co-payment-form" class="form payments" novalidate="novalidate">
+        <input id="test-input" data-bind='attr: {value: getFormKey()}' type="hidden" name="form_key"/>
+        <fieldset class="fieldset">
+            <legend class="legend">
+                <span data-bind="i18n: 'Payment Information'"></span>
+            </legend>
+            <div class="opc-payment" data-bind="visible: isPaymentMethodsAvailable">
+                <!-- ko foreach: getRegion('payment-methods-list') -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!-- /ko -->
+            </div>
+            <div class="no-quotes-block" data-bind="visible: isPaymentMethodsAvailable() == false">
+                <!-- ko i18n: 'No Payment method available.'--><!-- /ko -->
+            </div>
+        </fieldset>
+    </form>
+</div>

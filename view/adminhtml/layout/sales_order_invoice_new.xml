@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Infocus_PartialPayments::css/invoice/payment/form.css"/>
+        <script src="Infocus_PartialPayments::js/disable-submit.js"/>
+    </head>
+    <body>
+        <referenceContainer name="after.body.start">
+            <block class="Magento\Catalog\Block\Adminhtml\Product\Composite\Configure" name="after.body.start.product_composite_configure" template="Magento_Catalog::catalog/product/composite/configure.phtml"/>
+        </referenceContainer>
+        <referenceBlock name="order_items">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Infocus_PartialPayments::order/invoice/create/items.phtml</argument>
+            </action>
+            <block class="Infocus\PartialPayments\Block\Adminhtml\Order\Invoice\Form\Container" name="payment.method.form.container" as="form_container" template="Infocus_PartialPayments::order/invoice/create/payment/form/container.phtml">
+                <block class="Infocus\PartialPayments\Block\Adminhtml\Order\Invoice\Pay\Amount" name="payment.pay.amount" as="pay_amount" template="Infocus_PartialPayments::order/invoice/pay/amount.phtml"/>
+                <container name="partial.invoice.container.js" />
+            </block>
+        </referenceBlock>
+    </body>
+</page>

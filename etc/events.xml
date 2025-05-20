@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="payment_method_assign_data">
+        <observer name="partial_payment_data_assign" instance="Infocus\PartialPayments\Observer\Adminhtml\DataAssignObserver" />
+    </event>
+    <event name="sales_order_save_before">
+        <observer name="infocus_partial_payment_sales_order_save_before" instance="Infocus\PartialPayments\Observer\SalesOrderBeforeSaveObserver" />
+    </event>
+    <event name="sales_order_invoice_save_before">
+        <observer name="infocus_partial_payment_sales_order_invoice_save_before" instance="Infocus\PartialPayments\Observer\SalesOrderInvoiceBeforeSaveObserver" />
+    </event>
+    <event name="sales_order_payment_save_after">
+        <observer name="infocus_partial_payment_sales_order_payment_save_after" instance="Infocus\PartialPayments\Observer\SalesOrderPaymentAfterSaveObserver" />
+    </event>
+    <event name="payment_method_is_active">
+        <observer name="infocus_partial_payment_method_is_active" instance="Infocus\PartialPayments\Observer\PaymentMethodAvailabilityCheck" />
+    </event>
+</config>

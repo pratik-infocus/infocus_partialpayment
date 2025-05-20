@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Model\Service\InvoiceService">
+        <plugin name="infocus_invoice_service" type="Infocus\PartialPayments\Plugin\Sales\Model\Service\InvoiceService"/>
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View\Tab\Transactions">
+        <plugin name="infocus_order_view_transaction" type="Infocus\PartialPayments\Plugin\Sales\Block\Order\Tab\Transactions"/>
+    </type>
+    <type name="Magento\Sales\Model\ResourceModel\Grid">
+        <plugin name="infocus_order_resource_grid_order_select" type="Infocus\PartialPayments\Plugin\Sales\Model\ResourceModel\Grid"/>
+    </type>
+    <type name="Infocus\PartialPayments\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Infocus\PartialPayments\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">PartialLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Infocus\PartialPayments\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="is_partially_paid" xsi:type="string">sales_order.is_partially_paid</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Infocus\PartialPayments\Block\Adminhtml\Order\Invoice\Form\Container">
+        <arguments>
+            <argument name="additionalChecks" xsi:type="array">
+                <item name="can_capture_partial" xsi:type="string">can_capture_partial</item>
+                <item name="internal" xsi:type="string">internal</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Payment\Model\Checks\SpecificationFactory">
+        <arguments>
+            <argument name="mapping" xsi:type="array">
+                <item name="can_capture_partial" xsi:type="object">Infocus\PartialPayments\Model\Payment\Checks\CanCapturePartial</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Infocus\PartialPayments\Observer\PaymentMethodAvailabilityCheck">
+        <arguments>
+            <argument name="methodCodeArray" xsi:type="array">
+                <item name="partial_payment" xsi:type="string">partial_payment</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Api\GuestPaymentInformationManagementInterface">
+        <plugin name="remove_partial_payment_method" type="Infocus\PartialPayments\Plugin\Magento\Checkout\PaymentGuest" />
+    </type>
+    <type name="Magento\Checkout\Api\PaymentInformationManagementInterface">
+        <plugin name="remove_partial_payment_method" type="Infocus\PartialPayments\Plugin\Magento\Checkout\Payment" />
+    </type>
+    <type name="Magento\Checkout\Api\GuestShippingInformationManagementInterface">
+        <plugin name="remove_partial_payment_method_after_shipping_save_guest" type="Infocus\PartialPayments\Plugin\Magento\Checkout\SaveShippingGuest" />
+    </type>
+    <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
+        <plugin name="remove_partial_payment_method_after_shipping_save_user" type="Infocus\PartialPayments\Plugin\Magento\Checkout\SaveShipping" />
+    </type>
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Invoice\Grid" type="Infocus\PartialPayments\Model\Sales\ResourceModel\InvoiceGrid"/>
+    <virtualType name="Magento\SalesArchive\Model\ResourceModel\Order\Invoice\Grid" type="Infocus\PartialPayments\Model\Sales\ResourceModel\InvoiceGrid"/>
+    <virtualType name="CreditmemoGridAggregator" type="Infocus\PartialPayments\Model\Sales\ResourceModel\CreditmemoGrid"/>
+    <virtualType name="Magento\SalesArchive\Model\ResourceModel\Order\Creditmemo\Grid" type="Infocus\PartialPayments\Model\Sales\ResourceModel\CreditmemoGrid"/>
+    <virtualType name="partialInvoiceSkipProcessFlag" type="Infocus\PartialPayments\Model\Flags\Flag"/>
+    <type name="Infocus\PartialPayments\Plugin\Sales\Model\Order\Email\Sender\InvoiceSenderPlugin">
+        <arguments>
+            <argument name="skipEmailCopyOfInvoiceFlag" xsi:type="object">partialInvoiceSkipProcessFlag</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Payment\Gateway\Data\Order\OrderAdapter">
+        <plugin name="get_rest_grand_total_amount" type="Infocus\PartialPayments\Plugin\Magento\Payment\Gateway\Data\Order\OrderAdapterPlugin" />
+    </type>
+</config>

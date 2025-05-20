@@ -1,0 +1,44 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var \Infocus\PartialPayments\Block\Adminhtml\Order\Pay\Amount $block */
+?>
+<div id="order-billing_method-pay_amount" class="admin__page-section-item order-pay-amount" style="display:none;">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Partial payment section')?></span>
+    </div>
+    <fieldset class="admin__fieldset payment-method" id="order_pay_amount_fieldset">
+        <div class="field admin__field">
+            <label class="label admin__field-label" for="order-pay_amount-control"><span><?php /* @escapeNotVerified */ echo __('Would you like to pay partially')?></span></label>
+            <div class="admin__field-control control">
+                <select id="order-pay_amount-control"  name="" class="select admin__control-select" >
+                    <option value="0"><?php /* @escapeNotVerified */ echo __('No')?></option>
+                    <option value="1"><?php /* @escapeNotVerified */ echo __('Yes')?></option>
+                </select>
+            </div>
+        </div>
+        <div class="field admin__field" id="pay_amount_field" style="display:none">
+            <label class="label admin__field-label" for="order-pay_amount-input"><span><?php /* @escapeNotVerified */ echo __('Pay Amount')?></span></label>
+            <div class="admin__field-control control pay-amount-control" >
+                <input type="text" id="order-pay_amount-input" name="payment[<?php /* @escapeNotVerified */ echo $block->getFieldName() ?>]" class="validate-testx input-text admin__control-text validate-max-pay-amount validate-zero-or-greater" value=""/>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <infocus_partialpayments>
+            <settings>
+                <enabled>0</enabled>
+                <available_order_statuses>complete,pending,processing</available_order_statuses>
+                <full_payment_order_status>processing</full_payment_order_status>
+                <outstanding_invoice_template>infocus_partialpayments_settings_outstanding_invoice_template</outstanding_invoice_template>
+                <minimum_amount_type>fixed</minimum_amount_type>
+                <minimum_amount_value>1</minimum_amount_value>
+                <minimum_amount_percent>10</minimum_amount_percent>
+                <partial_payment_title>My Partial Orders</partial_payment_title>
+                <show_cards_expiry_date_customer_account>0</show_cards_expiry_date_customer_account>
+                <minimum_message>Minimum payment amount for this order is </minimum_message>
+                <threshold_message>Balance amount after this payment is lesser than minimum amount. Please pay full amount.</threshold_message>
+                <enable_module_logging>1</enable_module_logging>
+            </settings>
+        </infocus_partialpayments>
+        <payment>
+            <partial_payment>
+                <active>1</active>
+                <code>partial_payment</code>
+                <model>Infocus\PartialPayments\Model\Payment</model>
+                <payment_action>order</payment_action>
+                <order_status>pending</order_status>
+                <title>Partial Payment</title>
+                <allowspecific>0</allowspecific>
+                <group>offline</group>
+                <allow_for_first_order>1</allow_for_first_order>
+            </partial_payment>
+        </payment>
+    </default>
+</config>

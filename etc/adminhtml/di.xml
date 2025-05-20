@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Model\Order\Invoice">
+        <plugin name="infocus_invoice" type="Infocus\PartialPayments\Plugin\Sales\Model\Order\Invoice"/>
+    </type>
+    <type name="Magento\Sales\Model\AdminOrder\Create">
+        <plugin name="send_first_invoice_email" type="Infocus\PartialPayments\Plugin\Sales\Model\AdminOrder\Create"/>
+    </type>
+    <type name="Magento\Sales\Model\Service\CreditmemoService">
+        <plugin name="set_invoice_id" type="Infocus\PartialPayments\Plugin\Sales\Model\Service\CreditmemoService"/>
+    </type>
+    <type name="Magento\Vault\Model\Ui\Adminhtml\TokensConfigProvider">
+        <arguments>
+            <argument name="session" xsi:type="object">Infocus\PartialPayments\Model\Backend\Session\Quote</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\InvoiceSender">
+        <plugin name="Infocus_PartialPayments::MagentoSalesModelOrderEmailSenderInvoiceSender" type="Infocus\PartialPayments\Plugin\Sales\Model\Order\Email\Sender\InvoiceSenderPlugin"/>
+    </type>
+</config>

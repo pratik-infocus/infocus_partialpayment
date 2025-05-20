@@ -1,0 +1,84 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var \Infocus\PartialPayments\Block\Adminhtml\Order\Invoice\Form\Container $block */
+?>
+<div class="admin__page-section-title">
+    <span class="title"><?php /* @escapeNotVerified */ echo __('Payment Section') ?></span>
+</div>
+
+<?php /* @escapeNotVerified */ echo $block->getChildHtml('zero_payment_status') ?>
+
+<div class="admin__page-section-content">
+    <?php if ($block->hasMethods()): ?>
+        <div id="invoice_payment_form">
+            <dl class="admin__payment-methods">
+                <?php
+                $_methods       = $block->getMethods();
+                $_methodsCount  = count($_methods);
+                $_counter = 0;
+                ?>
+                <?php foreach ($_methods as $_method): $_code = $_method->getCode(); $_counter++; ?>
+                <?php if($_code !== "partial_payment"): ?>
+                    <dt class="admin__field-option payment_method_<?php /* @escapeNotVerified */ echo $_code ?>">
+                        <?php if ($_methodsCount > 1): ?>
+                            <input id="p_method_<?php /* @escapeNotVerified */ echo $_code ?>" value="<?php /* @escapeNotVerified */ echo $_code ?>" type="radio" name="payment[method]"
+                                   title="<?php echo $block->escapeHtml($_method->getTitle()) ?>" data-validate="{'validate-one-required-by-name':true}"
+                                   onclick="invoicePayment.switchPaymentMethod('<?php /* @escapeNotVerified */ echo $_code ?>')"<?php if ($block->getSelectedMethodCode() == $_code): ?> checked="checked"<?php endif; ?>
+                                   class="admin__control-radio<?php if ($_counter == $_methodsCount) : ?> validate-one-required-by-name<?php endif; ?>"/>
+                        <?php else :?>
+                            <span class="no-display">
+                                <input id="p_method_<?php /* @escapeNotVerified */ echo $_code ?>" value="<?php /* @escapeNotVerified */ echo $_code ?>" type="radio"
+                                    name="payment[method]" class="admin__control-radio"
+                                    checked="checked"/>
+                            </span>
+                        <?php endif;?>
+                        <label class="admin__field-label" for="p_method_<?php /* @escapeNotVerified */ echo $_code ?>"><?php echo $block->escapeHtml($_method->getTitle()) ?></label>
+                    </dt>
+                    <dd class="admin__payment-method-wapper payment_method_<?php /* @escapeNotVerified */ echo $_code ?>">
+                        <?php /* @escapeNotVerified */ echo $block->getPaymentFormHtml('payment.method.' . $_code) ?>
+                    </dd>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </dl>
+        </div>
+        <script type="text/x-magento-init">
+            {
+                "*": {
+                    "invoicePaymentWidget": {
+                        "captureData": <?php /* @escapeNotVerified */ echo $block->getPaymentCaptureDataJson()?>,
+                        "loadBlockUrl": "<?php /* @escapeNotVerified */ echo $block->getLoadBlockUrl(); ?>",
+                        "orderId": "<?php /* @escapeNotVerified */ echo $block->getOrder()->getId(); ?>",
+                        "methodsCount": <?= /* @escapeNotVerified */ $_methodsCount; ?>,
+                        "selectedMethodCode": "<?php /* @escapeNotVerified */ echo $block->getSelectedMethodCode(); ?>"
+                    }
+                }
+            }
+        </script>
+        <script type="text/javascript">
+            // a crutch to prevent an error
+            window.order = {addExcludedPaymentMethod: function () {}};
+        </script>
+    <?php else: ?>
+        <div class="admin__message-empty"><?php /* @escapeNotVerified */ echo __('No Payment Methods') ?></div>
+    <?php endif; ?>
+    <?php /* @escapeNotVerified */ echo $block->getChildHtml('pay_amount') ?>
+    <?php /* @escapeNotVerified */ echo $block->getChildHtml('partial.invoice.container.js') ?>
+</div>

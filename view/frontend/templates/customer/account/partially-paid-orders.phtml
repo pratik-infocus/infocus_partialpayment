@@ -1,0 +1,113 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+use Infocus\PartialPayments\Block\Customer\Account\Order\PartiallyPaidOrders;
+/**
+ * @var $block \Infocus\PartialPayments\Block\Customer\Account\Order\PartiallyPaidOrders
+ */
+$orders = $block->getOrders();
+$priceFormat = $block->getPriceFormat();
+$ordersCount = count($orders);
+$disallowedOrders = [];
+
+?>
+<?php echo  $block->getChildHtml('partially.paid.orders.info') ?>
+<?php if ($orders && $ordersCount): ?>
+    <form data-role="partially-form" class="partially-form" action="<?php echo $block->escapeUrl($block->getUrl('infocus_partialpayments/order/pay')); ?>" method="post" data-mage-init='{"partialValidate":{}}'>
+        <div class="table-wrapper partially-wrapper" data-role="invoices-container" data-mage-init='{"partialInvoice": {"priceFormat": <?php echo /* @escapeNotVerified */ json_encode($priceFormat); ?>}}'>
+            <table class="data table" id="partially-orders-table">
+                <caption class="table-caption"><?php echo  /* @noEscape */ __('Orders') ?></caption>
+                <thead>
+                    <tr>
+                        <th scope="col" class="col checkbox"><?php echo  /* @noEscape */ __('Select') ?></th>
+                        <th scope="col" class="col id"><?php echo  /* @noEscape */ __('Order No.') ?></th>
+                        <th scope="col" class="col date"><?php echo  /* @noEscape */ __('Date') ?></th>
+                        <?php echo  /* @noEscape */ $block->getChildHtml('partially.paid.orders.extra.column.header') ?>
+                        <th scope="col" class="col shipping"><?php echo  /* @noEscape */ __('Ship To') ?></th>
+                        <th scope="col" class="col total"><?php echo  /* @noEscape */ __('Order Total') ?></th>
+                        <th scope="col" class="col status"><?php echo  /* @noEscape */ __('Status') ?></th>
+                        <th scope="col" class="col actions"><?php echo  /* @noEscape */ __('Action') ?></th>
+                        <th scope="col" class="col amount"><?php echo  /* @noEscape */ __('Balance Amount') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($orders as $order): ?>
+                    <tr data-role="invoice-item">
+                        <td data-th="<?php echo  /* @escapeNotVerified */ __('Select') ?>"><input data-role="invoice-trigger" id="order_<?php /* @escapeNotVerified */  echo $order->getId(); ?>" type="radio" name="order_ids[]" value="<?php /* @escapeNotVerified */  echo $order->getId() ?>" class="-invoice" /><label for="order_<?php /* @escapeNotVerified */  echo $order->getId(); ?>"></label></td>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Order #')) ?>" class="col id"><?php echo  /* @escapeNotVerified */ $order->getRealOrderId() ?></td>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Date')) ?>" class="col date"><?php echo  /* @escapeNotVerified */ $block->formatDate($order->getCreatedAt()) ?></td>
+                        <?php $extra = $block->getChildBlock('partially.paid.orders.order.extra.container'); ?>
+                        <?php if ($extra): ?>
+                            <?php $extra->setOrder($order); ?>
+                            <?php echo  /* @noEscape */ $extra->getChildHtml() ?>
+                        <?php endif; ?>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Ship To')) ?>" class="col shipping"><?php echo  $order->getShippingAddress() ? $block->escapeHtml($order->getShippingAddress()->getName()) : '&nbsp;' ?></td>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Order Total')) ?>" class="col total"><?php echo  /* @escapeNotVerified */ $order->formatPrice($order->getGrandTotal()) ?></td>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Status')) ?>" class="col status"><?php echo  /* @escapeNotVerified */ $order->getStatusLabel() ?></td>
+                        <td data-th="<?php echo  $block->escapeHtml(__('Action')) ?>" class="col actions">
+                            <?php foreach ($block->getActions() as $actionCode => $actionConfiguration): ?>
+                                <a href="<?php echo  /* @escapeNotVerified */ $block->getUrlWithOrderParameter($block->getDataByKeyFromArray($actionConfiguration, PartiallyPaidOrders::PATH), $order) ?>" class="action " <?php echo /* @escapeNotVerified */  $actionCode ?>>
+                                    <span><?php echo  /* @escapeNotVerified */ __($block->getDataByKeyFromArray($actionConfiguration, PartiallyPaidOrders::LABEL)); ?></span>
+                                </a>
+                            <?php endforeach; ?>
+                        </td>
+                        <td data-th="<?php echo  /* @escapeNotVerified */ __('Payment Amount') ?>" class="col amount"><input data-role="invoice-sum" type="number" class="input-sum" data-min-amount="<?php echo /* @escapeNotVerified */ $block->getMinimalAmountConfig($order); ?>" data-min="<?php echo /* @escapeNotVerified */ $block->getMinimalAmountToPay($order); ?>"  data-max="<?php /* @escapeNotVerified */  echo $block->getAmountToPay($order)?>" name="order_<?php /* @escapeNotVerified */  echo $order->getId()?>_amount" <?php if (!$block->isPartialPaymentEnabled()) : ?>readonly="readonly" <?php endif; ?>value="<?php /* @escapeNotVerified */  echo $block->getAmountToPay($order)?>" /></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <div class="message info -notice"><div><?= $block->escapeHtml(__('Please choose an order to pay.')) ?></div></div>
+            <?php if (!$block->isPartialPaymentEnabled()) : ?>
+                <div class="message info -notice"><div><?= $block->escapeHtml(__('Only full outstanding amount could be paid.')) ?></div></div>
+            <?php endif; ?>
+            <div class="partially-total" data-role="partially-total">
+                <?= /* @escapeNotVerified */ __('Invoice total:'); ?>
+                <span class="sum" data-role="partially-sum"></span>
+            </div>
+        </div>
+        <input data-role="payment-method-nonce" type="hidden" name="payment[additional_information][payment_method_nonce]">
+        <input data-role="payment-token" type="hidden" name="payment[additional_information][is_active_payment_token_enabler]">
+        <input data-role="payment-method" type="hidden" name="payment[method]">
+    </form>
+    <?php if (isset($ordersCount) && $ordersCount > 9): ?>
+        <?php if ($block->getPagerHtml()): ?>
+            <div class="order-products-toolbar toolbar bottom"><?php echo  $block->getPagerHtml() ?></div>
+        <?php endif ?>
+    <?php endif ?>
+    <?php echo $block->getChildHtml('partially.paid.orders.payment'); ?>
+
+    <div id="partial-payments" data-role="partially-loader" data-bind="scope:'partial-payments'" class="checkout-container partial-methods" data-mage-init='{"loader": { "icon": "<?php /* @escapeNotVerified */ echo $block->escapeUrl($this->helper('Infocus\PartialPayments\Helper\Data')->getImage()); ?>"<?php if($_loaderText = $this->helper('Infocus\PartialPayments\Helper\Data')->getText()): ?>, "texts" : {"loaderText" : "<?php /* @escapeNotVerified */ echo $_loaderText; ?>"} <?php endif; ?>}}'>
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <script type="text/x-magento-init">
+            {
+                "#partial-payments": {
+                    "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+                }
+            }
+        </script>
+    </div>
+    <script>
+        window.cardExpiryConfig = '<?php echo $block->getShowExpiryYesNo(); ?>';
+        window.getMinimumMessage = '<?php echo $block->getMinimumMessage(); ?>';
+        window.getMinimumThresholdMessage = '<?php echo $block->getMinimumThresholdMessage(); ?>';
+    </script>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo /* @escapeNotVerified */ __('You have no partial orders.') ?></span></div>
+<?php endif ?>

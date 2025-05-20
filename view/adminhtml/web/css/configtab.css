@@ -1,0 +1,15 @@
+.admin__page-nav.infocus-config-tab-class._collapsed ._collapsible strong:before {
+    content: "";
+    background: url(../images/logo.svg) no-repeat scroll 0 8px transparent;
+    width: 100%;
+    background-size: 125px;
+    height: 45px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.admin__page-nav.infocus-config-tab-class._collapsed .admin__page-nav-title.title._collapsible{
+    padding: 1rem 1.5rem;
+}
+.admin__page-nav.infocus-config-tab-class._collapsed ._collapsible strong {
+    font-size: 0;
+}

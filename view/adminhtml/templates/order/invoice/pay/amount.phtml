@@ -1,0 +1,73 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var \Infocus\PartialPayments\Block\Adminhtml\Order\Invoice\Pay\Amount $block */
+?>
+<div id="invoice-billing_method-pay_amount" class="admin__page-section-item order-pay-amount">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Partial payment section')?></span>
+    </div>
+    <fieldset class="admin__fieldset payment-method" id="order_pay_amount_fieldset">
+        <div class="field admin__field">
+            <label class="label admin__field-label" for="order-pay_amount-control"><span><?php /* @escapeNotVerified */ echo __('Would you like to pay partially')?></span></label>
+            <div class="admin__field-control control">
+                <select id="order-pay_amount-control"  name="" class="select admin__control-select" >
+                    <option value="0"><?php /* @escapeNotVerified */ echo __('No')?></option>
+                    <option value="1"><?php /* @escapeNotVerified */ echo __('Yes')?></option>
+                </select>
+            </div>
+        </div>
+        <div class="field admin__field" id="pay_amount_field">
+            <label class="label admin__field-label" for="order-pay_amount-input"><span><?php /* @escapeNotVerified */ echo __('Pay Amount')?></span></label>
+            <div class="admin__field-control control pay-amount-control" >
+                <input type="text" id="order-pay_amount-input" disabled="disabled" name="payment[<?php /* @escapeNotVerified */ echo $block->getFieldName() ?>]" class="validate-text input-text admin__control-text validate-greater-than-zero validate-max-pay-amount" value="<?php /* @escapeNotVerified */ echo $block->getPayAmount() ?>"/>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<script type="text/javascript">
+    require([
+        'jquery',
+        'jquery/ui',
+        'jquery/validate',
+        'mage/mage'
+    ], function($) {
+        $('#pay_amount_field').hide();
+        $('#edit_form button.submit-button').attr('onclick', "invoicePayment.submitInvoice(event)");
+        $('#edit_form button.submit-button').attr('type', 'submit');
+        $('.qty-input').prop("disabled", true);
+        $.validator.addMethod(
+            'validate-max-pay-amount', function (value) {
+                return value <= parseFloat('<?php /* @escapeNotVerified */ echo $block->getPayAmount(); ?>');
+            }, '<?php /* @escapeNotVerified */ echo __('You cannot pay more than %1', $block->formatPrice($block->getPayAmount())) ?>');
+        // var dataForm = $('#edit_form');
+        // dataForm.mage('validation', {});
+        $('#order-pay_amount-control').on('change', function () {
+            if ($(this).val() == 1) {
+                $('#pay_amount_field').show();
+                $('#order-pay_amount-input').removeAttr('disabled');
+            } else {
+                $('#pay_amount_field').hide();
+                $('#order-pay_amount-input').attr("disabled", "disabled");
+            }
+        });
+    });
+</script>

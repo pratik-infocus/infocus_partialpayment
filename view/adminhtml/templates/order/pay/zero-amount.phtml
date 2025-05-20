@@ -1,0 +1,35 @@
+<?php
+/**
+ * Infocus
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Infocus-solution.com license that is
+ * available through the world-wide-web at this URL:
+ * https://infocus-solution.com/license.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @author Infocus Solutions
+ * @copyright Copyright (c) 2024 Infocus (https://infocus-solution.com)
+ * @package Partial Payment module for Magento 2
+ */
+
+/** @var \Magento\Framework\View\Element\Template $block */
+?>
+<div id="order-billing_method-zero_payment" class="admin__page-section-item order-zero-payment">
+    <fieldset class="admin__fieldset payment-method" id="order_zero_payment_fieldset">
+        <div class="field admin__field">
+            <label class="label admin__field-label" for="order-zero-payment"><span><?php /* @escapeNotVerified */ echo __('Create invoice with zero payment')?></span></label>
+            <div class="admin__field-control control">
+                <select id="order-zero-payment"  name="zero-payment" class="select admin__control-select" data-mage-init='{"zeroInvoicePayment": {"method": "<?php /* @escapeNotVerified */ echo \Infocus\PartialPayments\Model\Payment::CODE; ?>"}}'>
+                    <option value="0"><?php /* @escapeNotVerified */ echo __('No')?></option>
+                    <option value="1"><?php /* @escapeNotVerified */ echo __('Yes')?></option>
+                </select>
+            </div>
+        </div>
+    </fieldset>
+</div>
